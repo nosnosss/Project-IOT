@@ -7,9 +7,11 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 #include <ArduinoJson.h>
+#include <HTTPClient.h>
 
-const char* ssid = "iPhone";
+const char* ssid = "iPhoneST";
 const char* pw = "0987654321";
+const char *serverUrl = "http://192.168.0.104:3000/record";
 
 // inisialisasi Bot Token
 #define BOTtoken "6158547813:AAHn6RAnJ_cFKB2W4aSk3ij27ymyCOL_ImE"  // Bot Token dari BotFather
@@ -123,6 +125,7 @@ void loop() {
       }else{
         lcd.clear();
         lcd.print(" CUA MO ");
+        if (sendDataToServer(cardID)) {}
       }
       if(isSecondaryCard(cardID)){
         char checkKey = 0;
@@ -131,6 +134,8 @@ void loop() {
         }
         if(checkKey == 'C'){
           deleteRFIDCard(cardID);
+          String xxx = "DAXOATHE:"+cardID;
+          if (sendDataToServer(xxx)) {}
         }
       }
     }
@@ -138,6 +143,8 @@ void loop() {
       lcd.clear();
       lcd.print("KHONG CO QUYEN");
       Serial.println("KHONG CO QUYEN");
+      String xxx = "THELA:"+cardID;
+      if (sendDataToServer(xxx)) {}
       lcd.setCursor(0, 1);
       lcd.print("B: THEM THE ||");     
       char secondaryKey = 0;
@@ -147,6 +154,8 @@ void loop() {
       if (secondaryKey == 'B') {
         Serial.println("tien hanh them the");
         addRFIDCard(cardID);
+        String xxx = "DATHEMTHE:"+cardID;
+        if (sendDataToServer(xxx)) {}
       }
       else{
         lcd.clear();
@@ -158,6 +167,26 @@ void loop() {
       }
     }
     delay(1000); // Tránh đọc thẻ liên tục
+  }
+}
+
+bool sendDataToServer(String cardID) {
+  HTTPClient http;
+  http.begin(serverUrl);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  String postData = "cardID=" + cardID;
+  int httpResponseCode = http.POST(postData);
+
+  if (httpResponseCode > 0) {
+    String response = http.getString();
+    Serial.println("Server response: " + response);
+    http.end();
+    return true;
+  } else {
+    Serial.println("Error on sending data to server");
+    http.end();
+    return false;
   }
 }
 
@@ -213,6 +242,8 @@ void enterPassword() {
     digitalWrite(RELAY_PIN, !digitalRead(RELAY_PIN)); // Đảo trạng thái relay
     lcd.clear();
     lcd.print(" CUA MO");
+    String xxx = "MOCUABANGMK";
+    if (sendDataToServer(xxx)) {}
     // lcd.print(digitalRead(RELAY_PIN) == HIGH ? "Ngat" : "Dong");
     Serial.println("Relay: " + String(digitalRead(RELAY_PIN) == HIGH ? "Ngat" : "Dong"));
   } 
@@ -220,6 +251,8 @@ void enterPassword() {
     lcd.clear();
     lcd.print("MAT KHAU SAI");
     Serial.println("Mat khau sai");
+    String xxx = "NHAPMKSAI";
+    if (sendDataToServer(xxx)) {}
     delay(2000);
     lcd.clear();
     lcd.createChar(0, icon);
@@ -435,6 +468,8 @@ void handleNewMessages(int numNewMessages) {
       digitalWrite(RELAY_PIN, LOW);
       lcd.clear();
       lcd.print(" CUA MO ");
+      String xxx = "MOCUATUXAQUATELEGRAM";
+      if (sendDataToServer(xxx)) {}
     }
     
     if (text == "/relay_ngat") {

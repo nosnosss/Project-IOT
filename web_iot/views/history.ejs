@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HISTORY</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      background-color: #ffd700; /* Mã màu cho màu vàng */
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: green;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    tr:hover {
+      background-color: red;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>LỊCH SỬ SMART LOCK</h1>
+  <table border="1">
+    <tr>
+      <th>Thông tin</th>
+      <th>Thời gian</th>
+    </tr>
+    <% for (let i = 0; i < accessLogs.length; i++) { %>
+      <tr>
+        <td><%= accessLogs[i].card_id %></td>
+        <td><%= accessLogs[i].access_time %></td>
+      </tr>
+    <% } %>
+  </table>
+</body>
+</html>
